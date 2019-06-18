@@ -148,14 +148,17 @@ public class ConditionRouter implements Router, Comparable<Router> {
             return invokers;
         }
         try {
+            // 是否匹配消费者
             if (!matchWhen(url, invocation)) {
                 return invokers;
             }
+
             List<Invoker<T>> result = new ArrayList<Invoker<T>>();
             if (thenCondition == null) {
                 logger.warn("The current consumer in the service blacklist. consumer: " + NetUtils.getLocalHost() + ", service: " + url.getServiceKey());
                 return result;
             }
+
             for (Invoker<T> invoker : invokers) {
                 if (matchThen(invoker.getUrl(), url)) {
                     result.add(invoker);
@@ -164,6 +167,7 @@ public class ConditionRouter implements Router, Comparable<Router> {
             if (!result.isEmpty()) {
                 return result;
             } else if (force) {
+                // force  当路由结果为空时，是否强制执行，如果不强制执行，路由结果为空的路由规则将自动失效，可不填，缺省为 false
                 logger.warn("The route result is empty and force execute. consumer: " + NetUtils.getLocalHost() + ", service: " + url.getServiceKey() + ", router: " + url.getParameterAndDecoded(Constants.RULE_KEY));
                 return result;
             }
@@ -210,6 +214,7 @@ public class ConditionRouter implements Router, Comparable<Router> {
                     sampleValue = sample.get(Constants.DEFAULT_KEY_PREFIX + key);
                 }
             }
+
             if (sampleValue != null) {
                 if (!matchPair.getValue().isMatch(sampleValue, param)) {
                     return false;

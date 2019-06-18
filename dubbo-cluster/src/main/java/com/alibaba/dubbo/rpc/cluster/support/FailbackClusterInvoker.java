@@ -43,6 +43,7 @@ import java.util.concurrent.TimeUnit;
  * Especially useful for services of notification.
  *
  * <a href="http://en.wikipedia.org/wiki/Failback">Failback</a>
+ *  失败自动恢复，后台记录失败请求，定时重发。通常用于消息通知操作。
  *
  */
 public class FailbackClusterInvoker<T> extends AbstractClusterInvoker<T> {
@@ -96,6 +97,7 @@ public class FailbackClusterInvoker<T> extends AbstractClusterInvoker<T> {
             Invocation invocation = entry.getKey();
             Invoker<?> invoker = entry.getValue();
             try {
+                // todo 此处调用岂不是会对非幂等性接口造成影响？
                 invoker.invoke(invocation);
                 failed.remove(invocation);
             } catch (Throwable e) {

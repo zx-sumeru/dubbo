@@ -44,8 +44,8 @@ import java.util.concurrent.atomic.AtomicBoolean;
  */
 public abstract class AbstractClusterInvoker<T> implements Invoker<T> {
 
-    private static final Logger logger = LoggerFactory
-            .getLogger(AbstractClusterInvoker.class);
+    private static final Logger logger = LoggerFactory.getLogger(AbstractClusterInvoker.class);
+
     protected final Directory<T> directory;
 
     protected final boolean availablecheck;
@@ -109,11 +109,14 @@ public abstract class AbstractClusterInvoker<T> implements Invoker<T> {
      * @throws RpcException
      */
     protected Invoker<T> select(LoadBalance loadbalance, Invocation invocation, List<Invoker<T>> invokers, List<Invoker<T>> selected) throws RpcException {
-        if (invokers == null || invokers.isEmpty())
+        if (invokers == null || invokers.isEmpty()) {
             return null;
+        }
+
         String methodName = invocation == null ? "" : invocation.getMethodName();
 
         boolean sticky = invokers.get(0).getUrl().getMethodParameter(methodName, Constants.CLUSTER_STICKY_KEY, Constants.DEFAULT_CLUSTER_STICKY);
+
         {
             //ignore overloaded method
             if (stickyInvoker != null && !invokers.contains(stickyInvoker)) {
@@ -126,6 +129,7 @@ public abstract class AbstractClusterInvoker<T> implements Invoker<T> {
                 }
             }
         }
+
         Invoker<T> invoker = doSelect(loadbalance, invocation, invokers, selected);
 
         if (sticky) {
@@ -135,10 +139,12 @@ public abstract class AbstractClusterInvoker<T> implements Invoker<T> {
     }
 
     private Invoker<T> doSelect(LoadBalance loadbalance, Invocation invocation, List<Invoker<T>> invokers, List<Invoker<T>> selected) throws RpcException {
-        if (invokers == null || invokers.isEmpty())
+        if (invokers == null || invokers.isEmpty()) {
             return null;
-        if (invokers.size() == 1)
+        }
+        if (invokers.size() == 1) {
             return invokers.get(0);
+        }
         if (loadbalance == null) {
             loadbalance = ExtensionLoader.getExtensionLoader(LoadBalance.class).getExtension(Constants.DEFAULT_LOADBALANCE);
         }
@@ -207,6 +213,7 @@ public abstract class AbstractClusterInvoker<T> implements Invoker<T> {
                 return loadbalance.select(reselectInvokers, getUrl(), invocation);
             }
         }
+
         // Just pick an available invoker using loadbalance policy
         {
             if (selected != null) {
@@ -270,8 +277,7 @@ public abstract class AbstractClusterInvoker<T> implements Invoker<T> {
         }
     }
 
-    protected abstract Result doInvoke(Invocation invocation, List<Invoker<T>> invokers,
-                                       LoadBalance loadbalance) throws RpcException;
+    protected abstract Result doInvoke(Invocation invocation, List<Invoker<T>> invokers, LoadBalance loadbalance) throws RpcException;
 
     protected List<Invoker<T>> list(Invocation invocation) throws RpcException {
         List<Invoker<T>> invokers = directory.list(invocation);

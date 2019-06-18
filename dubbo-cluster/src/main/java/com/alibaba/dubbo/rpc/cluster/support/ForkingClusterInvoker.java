@@ -86,7 +86,9 @@ public class ForkingClusterInvoker<T> extends AbstractClusterInvoker<T> {
                             ref.offer(result);
                         } catch (Throwable e) {
                             int value = count.incrementAndGet();
-                            if (value >= selected.size()) {
+
+                            // 最后一个调用的到此时会向队列中存入异常信息
+                           if (value >= selected.size()) {
                                 ref.offer(e);
                             }
                         }
