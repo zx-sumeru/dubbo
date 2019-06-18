@@ -65,6 +65,7 @@ public class ConditionRouter implements Router, Comparable<Router> {
             int i = rule.indexOf("=>");
             String whenRule = i < 0 ? null : rule.substring(0, i).trim();
             String thenRule = i < 0 ? rule.trim() : rule.substring(i + 2).trim();
+
             Map<String, MatchPair> when = StringUtils.isBlank(whenRule) || "true".equals(whenRule) ? new HashMap<String, MatchPair>() : parseRule(whenRule);
             Map<String, MatchPair> then = StringUtils.isBlank(thenRule) || "false".equals(thenRule) ? null : parseRule(thenRule);
             // NOTE: It should be determined on the business level whether the `When condition` can be empty or not.
@@ -75,8 +76,8 @@ public class ConditionRouter implements Router, Comparable<Router> {
         }
     }
 
-    private static Map<String, MatchPair> parseRule(String rule)
-            throws ParseException {
+    private static Map<String, MatchPair> parseRule(String rule) throws ParseException {
+
         Map<String, MatchPair> condition = new HashMap<String, MatchPair>();
         if (StringUtils.isBlank(rule)) {
             return condition;
@@ -93,9 +94,8 @@ public class ConditionRouter implements Router, Comparable<Router> {
             if (separator == null || separator.length() == 0) {
                 pair = new MatchPair();
                 condition.put(content, pair);
-            }
-            // The KV part of the condition expression
-            else if ("&".equals(separator)) {
+            } else if ("&".equals(separator)) {
+                // The KV part of the condition expression
                 if (condition.get(content) == null) {
                     pair = new MatchPair();
                     condition.put(content, pair);
@@ -143,8 +143,7 @@ public class ConditionRouter implements Router, Comparable<Router> {
     }
 
     @Override
-    public <T> List<Invoker<T>> route(List<Invoker<T>> invokers, URL url, Invocation invocation)
-            throws RpcException {
+    public <T> List<Invoker<T>> route(List<Invoker<T>> invokers, URL url, Invocation invocation) throws RpcException {
         if (invokers == null || invokers.isEmpty()) {
             return invokers;
         }
