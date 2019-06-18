@@ -30,6 +30,13 @@ import java.util.List;
  */
 public abstract class AbstractLoadBalance implements LoadBalance {
 
+    /**
+     * 计算含预热的权重
+     * @param uptime    应用已经启动的时间，如果 uptime>=warmup,说明应用预热完成
+     * @param warmup    设定的预热时间
+     * @param weight
+     * @return
+     */
     static int calculateWarmupWeight(int uptime, int warmup, int weight) {
         int ww = (int) ((float) uptime / ((float) warmup / (float) weight));
         return ww < 1 ? 1 : (ww > weight ? weight : ww);
