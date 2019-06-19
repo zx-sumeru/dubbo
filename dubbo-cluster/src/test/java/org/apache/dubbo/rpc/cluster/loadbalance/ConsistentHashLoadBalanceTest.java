@@ -33,7 +33,7 @@ public class ConsistentHashLoadBalanceTest extends LoadBalanceBaseTest {
         int runs = 10000;
         long unHitedInvokerCount = 0;
         Map<Invoker, Long> hitedInvokers = new HashMap<>();
-        Map<Invoker, AtomicLong> counter = getInvokeCounter(runs, ConsistentHashLoadBalance2.NAME);
+        Map<Invoker, AtomicLong> counter = getInvokeCounter(runs, ConsistentHashLoadBalance.NAME);
         for (Invoker minvoker : counter.keySet()) {
             Long count = counter.get(minvoker).get();
 

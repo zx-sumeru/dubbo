@@ -41,6 +41,7 @@ import static org.apache.dubbo.remoting.Constants.TICKS_PER_WHEEL;
 
 /**
  * DefaultMessageClient
+ * 封装了一些关于心跳检测的逻辑
  */
 public class HeaderExchangeClient implements ExchangeClient {
 
