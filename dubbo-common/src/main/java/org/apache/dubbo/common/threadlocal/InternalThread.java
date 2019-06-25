@@ -19,6 +19,7 @@ package org.apache.dubbo.common.threadlocal;
 
 /**
  * InternalThread
+ *  含有 InternalThreadLocalMap 的 Thread
  */
 public class InternalThread extends Thread {
 

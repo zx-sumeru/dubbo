@@ -65,6 +65,7 @@ public final class InternalThreadLocalMap {
 
     public static int nextVariableIndex() {
         int index = NEXT_INDEX.getAndIncrement();
+        /*todo 值向上溢出,注意严谨*/
         if (index < 0) {
             NEXT_INDEX.decrementAndGet();
             throw new IllegalStateException("Too many thread-local indexed variables");
@@ -148,9 +149,11 @@ public final class InternalThreadLocalMap {
         return ret;
     }
 
+    /*数组扩容*/
     private void expandIndexedVariableTableAndSet(int index, Object value) {
         Object[] oldArray = indexedVariables;
         final int oldCapacity = oldArray.length;
+        /*获取大于 index 的2的次幂，参考 hashmap*/
         int newCapacity = index;
         newCapacity |= newCapacity >>> 1;
         newCapacity |= newCapacity >>> 2;

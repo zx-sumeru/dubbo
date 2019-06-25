@@ -26,9 +26,12 @@ import java.lang.reflect.Method;
 
 /**
  * InvokerHandler
+ * todo 远程调用代理的关键类，将Object的方法拦截在本地，其它方法进行远程调用
  */
 public class InvokerInvocationHandler implements InvocationHandler {
     private static final Logger logger = LoggerFactory.getLogger(InvokerInvocationHandler.class);
+
+    /*todo 封装所有服务提供者调用信息*/
     private final Invoker<?> invoker;
 
     public InvokerInvocationHandler(Invoker<?> handler) {
@@ -39,9 +42,11 @@ public class InvokerInvocationHandler implements InvocationHandler {
     public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
         String methodName = method.getName();
         Class<?>[] parameterTypes = method.getParameterTypes();
+        /*拦截Object中声明的方法*/
         if (method.getDeclaringClass() == Object.class) {
             return method.invoke(invoker, args);
         }
+        /*下面这些方法可能会被子类重写*/
         if ("toString".equals(methodName) && parameterTypes.length == 0) {
             return invoker.toString();
         }
